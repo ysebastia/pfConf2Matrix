@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         release_pfconf2matrix = "ysebastia/pfconf2matrix:1.0"
+        QUALITY_DOCKERFILE = "1"
     }
     stages {
         stage ('Checkout') {
@@ -39,9 +40,7 @@ pipeline {
 	            	steps {
 	                	sh 'touch hadolint.json'
 	                	sh 'hadolint -f json src/*/Dockerfile | tee -a hadolint.json'
-	            		recordIssues( healthy: 1, unhealthy: 2, tools: [
-	                  		hadoLint(pattern: 'hadolint.json')
-	                	])
+	            		recordIssues qualityGates: [[threshold: QUALITY_DOCKERFILE, type: 'TOTAL', unstable: false]], tools: [hadoLint(pattern: 'hadolint.json')]
 	              		archiveArtifacts artifacts: 'hadolint.json', followSymlinks: false
 	              		sh 'rm hadolint.json'
 	            	}
