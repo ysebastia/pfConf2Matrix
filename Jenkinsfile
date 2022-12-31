@@ -21,7 +21,7 @@ pipeline {
                 stage ('cloc') {
               agent {
                   docker {
-                      image 'docker.io/ysebastia/cloc:1.90'
+                      image 'ysebastia/cloc:1.96'
                   }
                 }
                   steps {
