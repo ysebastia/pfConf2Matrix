@@ -9,43 +9,43 @@ pipeline {
             agent any
             steps {
                 checkout([
-                	$class: 'GitSCM',
-                	branches: [[name: '*/main']],
-                	extensions: [[$class: 'CleanBeforeCheckout', deleteUntrackedNestedRepositories: true]],
-                	userRemoteConfigs: [[url: 'https://github.com/ysebastia/pfConf2Matrix.git']]
-            	])
+                  $class: 'GitSCM',
+                  branches: [[name: '*/main']],
+                  extensions: [[$class: 'CleanBeforeCheckout', deleteUntrackedNestedRepositories: true]],
+                  userRemoteConfigs: [[url: 'https://github.com/ysebastia/pfConf2Matrix.git']]
+              ])
             }
         }
         stage('QA') {
-		    parallel {
+        parallel {
                 stage ('cloc') {
-        			agent {
-            			docker {
-                			image 'docker.io/ysebastia/cloc:1.90'
-            			}
-          			}
-      		        steps {
-      		            sh 'cloc --by-file --xml --fullpath --out=build/cloc.xml ./'
-            	        sloccountPublish encoding: '', pattern: 'build/cloc.xml'
-            	        archiveArtifacts artifacts: 'build/cloc.xml', followSymlinks: false
-            	        sh 'rm build/cloc.xml'
-      		        }
+              agent {
+                  docker {
+                      image 'docker.io/ysebastia/cloc:1.90'
+                  }
                 }
-	        	stage ('hadolint') {
-	            	agent {
-	              		docker {
-                        	image 'docker.io/hadolint/hadolint:v2.9.2-alpine'
-                    	}
-	        		}
-	            	steps {
-	                	sh 'touch hadolint.json'
-	                	sh 'hadolint -f json src/*/Dockerfile | tee -a hadolint.json'
-	            		recordIssues qualityGates: [[threshold: QUALITY_DOCKERFILE, type: 'TOTAL', unstable: false]], tools: [hadoLint(pattern: 'hadolint.json')]
-	              		archiveArtifacts artifacts: 'hadolint.json', followSymlinks: false
-	              		sh 'rm hadolint.json'
-	            	}
-	        	}
-		    }
+                  steps {
+                      sh 'cloc --by-file --xml --fullpath --out=build/cloc.xml ./'
+                      sloccountPublish encoding: '', pattern: 'build/cloc.xml'
+                      archiveArtifacts artifacts: 'build/cloc.xml', followSymlinks: false
+                      sh 'rm build/cloc.xml'
+                  }
+                }
+            stage ('hadolint') {
+                agent {
+                    docker {
+                          image 'docker.io/hadolint/hadolint:v2.12.0-alpine'
+                      }
+              }
+                steps {
+                    sh 'touch hadolint.json'
+                    sh 'hadolint -f json src/*/Dockerfile | tee -a hadolint.json'
+                  recordIssues qualityGates: [[threshold: QUALITY_DOCKERFILE, type: 'TOTAL', unstable: false]], tools: [hadoLint(pattern: 'hadolint.json')]
+                    archiveArtifacts artifacts: 'hadolint.json', followSymlinks: false
+                    sh 'rm hadolint.json'
+                }
+            }
+        }
         }
         stage('Build') {
             parallel {
