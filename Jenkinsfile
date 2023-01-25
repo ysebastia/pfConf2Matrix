@@ -34,12 +34,12 @@ pipeline {
             stage ('hadolint') {
                 agent {
                     docker {
-                          image 'docker.io/hadolint/hadolint:v2.12.0-alpine'
+                          image 'docker.io/ysebastia/hadolint:2.12.0-1'
                       }
               }
                 steps {
                     sh 'touch hadolint.json'
-                    sh 'hadolint -f json src/*/Dockerfile | tee -a hadolint.json'
+                    sh '/usr/local/bin/hadolint.bash | tee -a hadolint.json'
                   recordIssues qualityGates: [[threshold: QUALITY_DOCKERFILE, type: 'TOTAL', unstable: false]], tools: [hadoLint(pattern: 'hadolint.json')]
                     archiveArtifacts artifacts: 'hadolint.json', followSymlinks: false
                     sh 'rm hadolint.json'
