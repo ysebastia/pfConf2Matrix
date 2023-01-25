@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        release_pfconf2matrix = "ysebastia/pfconf2matrix:1.0"
+        release_pfconf2matrix = "ysebastia/pfconf2matrix:1.1"
         QUALITY_DOCKERFILE = "1"
     }
     stages {
