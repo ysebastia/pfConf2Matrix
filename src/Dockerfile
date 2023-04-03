@@ -1,4 +1,4 @@
-FROM alpine:20221110
+FROM alpine:20230329
 RUN apk add --no-cache \
   perl-xml-twig=3.52-r4
 WORKDIR /app
