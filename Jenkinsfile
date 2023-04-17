@@ -1,7 +1,7 @@
 def hadolint(quality) {
   sh 'touch hadolint.json'
   sh '/usr/local/bin/hadolint.bash | tee -a hadolint.json'
-  recordIssues qualityGates: [[threshold: quality, type: 'TOTAL', unstable: false]], tools: [hadoLint(pattern: 'hadolint.json')]
+  recordIssues enabledForFailure: true, qualityGates: [[threshold: quality, type: 'TOTAL', unstable: false]], tools: [hadoLint(pattern: 'hadolint.json')]
   archiveArtifacts artifacts: 'hadolint.json', followSymlinks: false
   sh 'rm hadolint.json'
 }
