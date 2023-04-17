@@ -1,3 +1,10 @@
+def hadolint(quality) {
+  sh 'touch hadolint.json'
+  sh '/usr/local/bin/hadolint.bash | tee -a hadolint.json'
+  recordIssues qualityGates: [[threshold: quality, type: 'TOTAL', unstable: false]], tools: [hadoLint(pattern: 'hadolint.json')]
+  archiveArtifacts artifacts: 'hadolint.json', followSymlinks: false
+  sh 'rm hadolint.json'
+}
 pipeline {
     agent any
     environment {
@@ -38,11 +45,7 @@ pipeline {
                       }
               }
                 steps {
-                    sh 'touch hadolint.json'
-                    sh '/usr/local/bin/hadolint.bash | tee -a hadolint.json'
-                  recordIssues qualityGates: [[threshold: QUALITY_DOCKERFILE, type: 'TOTAL', unstable: false]], tools: [hadoLint(pattern: 'hadolint.json')]
-                    archiveArtifacts artifacts: 'hadolint.json', followSymlinks: false
-                    sh 'rm hadolint.json'
+                    hadolint(QUALITY_DOCKERFILE)
                 }
             }
         }
