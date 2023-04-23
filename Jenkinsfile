@@ -28,6 +28,7 @@ pipeline {
                 stage ('cloc') {
               agent {
                   docker {
+                      label 'docker'
                       image 'ysebastia/cloc:1.96'
                   }
                 }
@@ -41,6 +42,7 @@ pipeline {
             stage ('hadolint') {
                 agent {
                     docker {
+                          label 'docker'
                           image 'docker.io/ysebastia/hadolint:2.12.0-1'
                       }
               }
@@ -53,7 +55,9 @@ pipeline {
         stage('Build') {
             parallel {
                 stage('pfConf2Matrix') {
-                    agent any
+                    agent {
+                      label 'docker'
+                    }
                     steps {
                         script {
                             withDockerRegistry(credentialsId: 'docker') {
