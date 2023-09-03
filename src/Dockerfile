@@ -1,6 +1,6 @@
-FROM alpine:20230329
+FROM alpine:20230901
 RUN apk add --no-cache \
-  perl-xml-twig=3.52-r4
+  perl-xml-twig=3.52-r5
 WORKDIR /app
 COPY rules_pfsense.pl rules_pfsense.pl
 RUN chmod +x rules_pfsense.pl && mkdir /app/mnt
