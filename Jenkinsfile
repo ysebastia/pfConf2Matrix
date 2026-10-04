@@ -29,7 +29,7 @@ pipeline {
               agent {
                   docker {
                       label 'docker'
-                      image 'ysebastia/cloc:2.04'
+                      image 'ysebastia/cloc:2.06'
                   }
                 }
                   steps {
@@ -43,7 +43,7 @@ pipeline {
                 agent {
                     docker {
                           label 'docker'
-                          image 'docker.io/ysebastia/hadolint:2.12.0-1'
+                          image 'docker.io/ysebastia/hadolint:2.14.0'
                       }
               }
                 steps {
